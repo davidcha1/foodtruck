@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -11,7 +11,8 @@ import { updatePassword } from '@/lib/auth'
 import { supabase } from '@/lib/supabase'
 import { CheckCircle, Eye, EyeOff } from 'lucide-react'
 
-export const ResetPasswordForm = () => {
+// Wrapper component that uses useSearchParams
+const ResetPasswordFormContent = () => {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -202,5 +203,21 @@ export const ResetPasswordForm = () => {
         </form>
       </CardContent>
     </Card>
+  )
+}
+
+// Main component with Suspense wrapper
+export const ResetPasswordForm = () => {
+  return (
+    <Suspense fallback={
+      <Card className="w-full max-w-md mx-auto">
+        <CardContent className="flex items-center justify-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-warm-red"></div>
+          <span className="ml-2">Loading...</span>
+        </CardContent>
+      </Card>
+    }>
+      <ResetPasswordFormContent />
+    </Suspense>
   )
 } 
